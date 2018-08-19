@@ -16,7 +16,7 @@ tf.set_random_seed(1)
 np.random.seed(1)
 
 # fake data
-x = np.linspace(-1, 1, 100)[:, np.newaxis]          # shape (100, 1)
+x = np.linspace(-1, 1, 1000)[:, np.newaxis]          # shape (100, 1)
 noise = np.random.normal(0, 0.1, size=x.shape)
 y = np.power(x, 2) + noise                          # shape (100, 1) + some noise
 
@@ -34,14 +34,14 @@ output = tf.layers.dense(l1, 1)                     # output layer
 loss = tf.losses.mean_squared_error(tf_y, output)   # compute cost
 optimizer = tf.train.GradientDescentOptimizer(learning_rate=0.5)
 train_op = optimizer.minimize(loss)
-
+time.sleep(3)
 with tf.Session() as sess:                          # control training and others
 	sess.run(tf.global_variables_initializer())         # initialize var in graph
 
 	plt.ion()   # something about plotting
-	fig, ax = plt.subplots()
+	fig, ax = plt.subplots(figsize=(20,16))
 	
-	for step in range(100):
+	for step in range(1000):
 		# train and net output
 		_, l, pred = sess.run([train_op, loss, output], {tf_x: x, tf_y: y})
 		if step % 5 == 0:
@@ -49,9 +49,10 @@ with tf.Session() as sess:                          # control training and other
 			ax.cla()
 			ax.scatter(x, y)
 			ax.plot(x, pred, 'r-', lw=5)
-			ax.text(0.5, 0, 'Loss=%.4f' % l, fontdict={'size': 20, 'color': 'red'})
+			ax.text(0, -0.35, 'Loss=%.4f' % l, fontdict={'size': 60, 'color': 'red'})
 			fig.canvas.flush_events()
 			time.sleep(0.1)
+			# ax.pause(0.1)
 
 	plt.ioff()
 	plt.show()
